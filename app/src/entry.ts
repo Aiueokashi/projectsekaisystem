@@ -14,6 +14,7 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async (message:Message) => {
+
     if (message.author.bot || message.system) return;
 
     const prefixRegex: RegExp = new RegExp(`^(<@!?${client.user!.id}>|${client.escapeRegex(prefix)})`, "g");
@@ -21,7 +22,7 @@ client.on('messageCreate', async (message:Message) => {
     if (isCommand)
     {
         const matchedPrefix: any = message.content.match(prefixRegex);
-        let content: any = message.content.slice(matchedPrefix.length).split(/[\s]+/gm);
+        let content: any = message.content.slice(matchedPrefix[0].length).split(/[\s]+/gm);
         if (content[0] === "")
         {
             content.shift();

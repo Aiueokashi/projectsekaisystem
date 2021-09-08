@@ -1,11 +1,19 @@
 import { TextChannel, Message, MessageEmbed, Collection, Snowflake, VoiceState, VoiceChannel } from 'discord.js';
+//@ts-ignore
+import { VoiceText } from "voice-text"; 
 import { Command } from '../structures/command';
+//@ts-ignore
 import { createAudioPlayer, createAudioResource, entersState, joinVoiceChannel, NoSubscriberBehavior, StreamType, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice';
 import { Database } from '../modules/database';
+//@ts-ignore
 import { jtalk } from '../modules/jtalk';
 import { MessageParser } from '../modules/messageParser';
 import { TTSGuild } from '../structures/ttsGuild';
+import { config } from "../config";
+//@ts-ignore
+import { Readable } from 'stream';
 
+const vt = new VoiceText(config.voice_api_token);
 const db = new Database();
 
 enum TTSGuildSettingType
@@ -39,6 +47,7 @@ module.exports = class TTSCommand extends Command
 
             case "join":
             case "j":
+                console.log(message.content)
                 this.join(message);
                 break;
 
@@ -66,7 +75,7 @@ module.exports = class TTSCommand extends Command
 
     public async onMessage(message: Message): Promise<void>
     {
-        if (message === null || message.author.bot || message.guild === null || message.content.startsWith('&') || message.content.startsWith(';'))
+        if (message === null || message.author.bot || message.guild === null /*|| message.content.startsWith('&') || message.content.startsWith(';')*/)
         return;
 
         const guildId: Snowflake = message.guild.id;
@@ -134,13 +143,15 @@ module.exports = class TTSCommand extends Command
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
 
-            const queuedMessage = ttsGuild.message;
-            if(queuedMessage !== "")
-            {
-                const rawFileName: string = jtalk(queuedMessage);
-                const resource = createAudioResource(rawFileName, { inputType: StreamType.Arbitrary });
+                const buffer = vt.fetchBuffer(msg,{
+                    format: "wav",
+                    speaker: "haruka",
+                    pitch: "100",
+                    speed: "10", 
+                })
+                const resource = createAudioResource(buffer)
+                
                 ttsGuild.playAudio(resource);
-            }
         }
     }
 
@@ -179,8 +190,8 @@ module.exports = class TTSCommand extends Command
                     .setColor("GREEN")
                     .setTitle("接続完了")
                     .setDescription("読み上げを開始します。読み上げを終了したい場合は、 `&tts end` と入力してください")
-                    .addField("読み上げ対象",`<#${message.channel.id}>`)
-                    .addField("ボイスチャンネル",`<#${connection.joinConfig.channelId}>`);
+                    .addField("読み上げ対象",`<#${message.channel.id}>`,true)
+                    .addField("ボイスチャンネル",`<#${connection.joinConfig.channelId}>`,true);
 
                 message.channel.send({ embeds: [embed] });
             }

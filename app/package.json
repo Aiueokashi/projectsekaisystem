@@ -22,8 +22,10 @@
         "google-translate-tts": "^0.4.0-dev",
         "mysql2": "^2.3.0",
         "sodium": "^3.0.2",
+        "stream": "^0.0.2",
         "ts-node": "^10.2.1",
-        "typescript": "^4.4.2"
+        "typescript": "^4.4.2",
+        "voice-text": "^0.1.2"
     },
     "devDependencies": {
         "@types/glob": "^7.1.4"

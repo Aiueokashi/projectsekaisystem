@@ -35,7 +35,7 @@ export class ProjectSekaiSystem extends Client
                 const command: Command = new (require(file))(this),
                 filename: string = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
                 this.commands.set(filename, command);
-                console.log(`Load: ${file}`);
+
             }
         });
     }
