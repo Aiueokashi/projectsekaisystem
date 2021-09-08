@@ -142,16 +142,18 @@ module.exports = class TTSCommand extends Command
             {
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
-
-                const buffer = vt.fetchBuffer(msg,{
-                    format: "wav",
-                    speaker: "haruka",
-                    pitch: "100",
-                    speed: "10", 
-                })
-                const resource = createAudioResource(buffer)
+            const queuedMessage = ttsGuild.message;
+                if(queuedMessage !== ""){
+                    const buffer = vt.fetchBuffer(msg,{
+                        format: "wav",
+                        speaker: "haruka",
+                        pitch: "100",
+                        speed: "10", 
+                    })
+                    const resource = createAudioResource(buffer)
                 
-                ttsGuild.playAudio(resource);
+                    ttsGuild.playAudio(resource);
+                }
         }
     }
 
